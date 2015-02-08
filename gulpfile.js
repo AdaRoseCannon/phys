@@ -3,9 +3,9 @@
 // generated on 2015-02-06 using generator-gulp-webapp 0.2.0
 var gulp = require('gulp');
 var browserify  = require('browserify');
-var traceurify  = require('traceurify');
-var source      = require('vinyl-source-stream');
+var es6ify  = require('es6ify');
 var $ = require('gulp-load-plugins')();
+var fs = require('fs');
 
 gulp.task('styles', function () {
   return gulp.src('app/styles/main.scss')
@@ -18,14 +18,15 @@ gulp.task('styles', function () {
     .pipe(gulp.dest('.tmp/styles'));
 });
 
-gulp.task('browserify', ['jshint'], function () {
-  var bundler = browserify('./app/scripts/main.js', { debug: true });
-  bundler.transform(traceurify({ module: 'commonjs' }));
+gulp.task('browserify', function () {
 
-  return bundler
+  return browserify({ debug: true })
+    .add(es6ify.runtime)
+    .transform(es6ify)
+    .require(require.resolve('./app/scripts/main.js'), { entry: true })
     .bundle()
-    .pipe(source('main.js'))
-    .pipe(gulp.dest('.tmp/scripts'));
+    .pipe(fs.createWriteStream('.tmp/scripts/main.js'));
+
 });
 
 gulp.task('jshint', function () {
@@ -128,7 +129,7 @@ gulp.task('watch', ['connect'], function () {
   gulp.watch('bower.json', ['wiredep']);
 });
 
-gulp.task('build', ['browserify', 'html', 'images', 'fonts', 'extras'], function () {
+gulp.task('build', ['jshint', 'browserify', 'html', 'images', 'fonts', 'extras'], function () {
   return gulp.src('dist/**/*').pipe($.size({title: 'build', gzip: true}));
 });
 
