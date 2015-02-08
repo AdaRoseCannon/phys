@@ -3,70 +3,51 @@ var Pixi = require('pixi');
 var world = require('./physics');
 var stage = require('./render');
 
+class Item {
+	constructor({
+		body = null,
+		sprite = null
+	}) {
+
+		if (!body || !sprite) {
+			throw Error('Missing body or sprite options');
+		}
+
+		require('./loop')(() => {
+			sprite.sprite.position.x = body.position[0];
+			sprite.sprite.position.y = body.position[1];
+			sprite.sprite.rotation = body.angle;
+		});
+
+		world.addBody(body);
+		stage.addChild(sprite.sprite);
+
+		this.body = body;
+	}
+}
+
 module.exports = {
-	rect: function (options = {}) {
-
-		var {
-			width = 2,
-			height = 1,
+	fromSprite: function ({
 			mass = 1,
-			angularVelocity = 0
-		} = options;
+			angularVelocity = 0,
+			sprite = null,
+		}) {
 
-		var boxShape = new p2.Rectangle(width, height);
+		var boxShape = new p2.Rectangle(sprite.sprite.width, sprite.sprite.height);
 		var boxBody = new p2.Body({
 			mass:mass,
-			position: [0,2],
+			position: [0,0],
 			angularVelocity: angularVelocity
 		});
 		boxBody.addShape(boxShape);
 
-		var graphics = new Pixi.Graphics();
-		graphics.beginFill(0xff0000);
-		graphics.drawRect(-boxShape.width/2, -boxShape.height/2, boxShape.width/2, boxShape.height/2);
+		if (!sprite) {
+			throw Error('No Sprite!');
+		}
 
-		require('./loop')(() => {
-			graphics.position.x = boxBody.position[0];
-			graphics.position.y = boxBody.position[1];
-			graphics.rotation = boxBody.angle;
+		return new Item({
+			body: boxBody,
+			sprite: sprite
 		});
-
-		// ...and add the body to the world.
-		// If we don't add it to the world, it won't be simulated.
-		world.addBody(boxBody);
-		stage.addChild(graphics);
-		return boxBody;
-	},
-
-	circle: function (options = {}) {
-
-		var {
-			radius = 1,
-			mass = 1,
-			angularVelocity = 0
-		} = options;
-
-		var boxShape = new p2.Circle(radius);
-		var boxBody = new p2.Body({
-			mass:mass,
-			position:[0,2],
-			angularVelocity:angularVelocity
-		});
-		boxBody.addShape(boxShape);
-
-		var graphics = new Pixi.Graphics();
-		graphics.beginFill(0xff0000);
-		graphics.drawRect(-radius, -radius, radius, radius);
-
-		require('./loop')(() => {
-			graphics.position.x = boxBody.position[0];
-			graphics.position.y = boxBody.position[1];
-			graphics.rotation = boxBody.angle;
-		});
-
-		// ...and add the body to the world.
-		// If we don't add it to the world, it won't be simulated.
-		world.addBody(boxBody);
-		stage.addChild(graphics);
 	}
 };

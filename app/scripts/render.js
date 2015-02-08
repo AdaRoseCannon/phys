@@ -11,7 +11,7 @@ var stage = new Pixi.Stage(0x66FF99);
 require('./loop')(() => renderer.render(stage));
 var container = new Pixi.DisplayObjectContainer();
 stage.addChild(container);
-var zoom = 60;
+var zoom = 1;
 container.position.x =  renderer.width/2; // center at origin
 container.position.y =  renderer.height/2;
 container.scale.x =  zoom;  // zoom in
