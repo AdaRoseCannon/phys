@@ -1,53 +1,34 @@
 var p2 = require('p2');
-var Pixi = require('pixi');
 var world = require('./physics');
+var Pixi = require('pixi');
 var stage = require('./render');
 
-class Item {
-	constructor({
-		body = null,
-		sprite = null
-	}) {
+module.exports.addNewBody = function addNewBody(id, {
+	mass = 0,
+	scale = 1
+}) {
+	var sprite = Pixi.Sprite.fromFrame(id);
+	sprite.anchor.x = 0.5;
+	sprite.anchor.y = 0.5;
+	sprite.scale.x = scale;
+	sprite.scale.y = -scale;
+	stage.addChild(sprite);
 
-		if (!body || !sprite) {
-			throw Error('Missing body or sprite options');
-		}
+	var body = new p2.Body({
+		mass: mass,
+		position: [0,0],
+		angularVelocity: 0
+	});
 
-		require('./loop')(() => {
-			sprite.sprite.position.x = body.position[0];
-			sprite.sprite.position.y = body.position[1];
-			sprite.sprite.rotation = body.angle;
-		});
+	body.addShape(new p2.Rectangle(Math.abs(sprite.width), Math.abs(sprite.height)));
 
-		world.addBody(body);
-		stage.addChild(sprite.sprite);
+	require('./loop')(() => {
+		sprite.position.x = body.position[0];
+		sprite.position.y = body.position[1];
+		sprite.rotation = body.angle;
+	});
 
-		this.body = body;
-	}
-}
-
-module.exports = {
-	fromSprite: function ({
-			mass = 1,
-			angularVelocity = 0,
-			sprite = null,
-		}) {
-
-		var boxShape = new p2.Rectangle(sprite.sprite.width, sprite.sprite.height);
-		var boxBody = new p2.Body({
-			mass:mass,
-			position: [0,0],
-			angularVelocity: angularVelocity
-		});
-		boxBody.addShape(boxShape);
-
-		if (!sprite) {
-			throw Error('No Sprite!');
-		}
-
-		return new Item({
-			body: boxBody,
-			sprite: sprite
-		});
-	}
+	world.addBody(body);
+	body.sprite = sprite;
+	return body;
 };

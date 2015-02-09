@@ -1,43 +1,30 @@
 /* jshint devel:true */
 
-var sprites = require('./sprite');
 var Pixi = require('pixi');
 
-function preloadImage(url) {
-	return new Promise(function (resolve, reject) {
-		var i = new Image();
-		i.src = url;
-		i.onload = () => {
-			resolve(sprites.addSprite('sprite1', url));
-		};
-		i.onerror = reject;
+function preloadImage(tileAtlas) {
+	return new Promise(function (resolve) {
+		var loader = new Pixi.AssetLoader(tileAtlas);
+		loader.onComplete = resolve;
+		loader.load();	
 	});
 }
 
 Promise.all([
-	preloadImage("images/sprite2.png")
-]).then((sprites) => {
-	var stage = require('./render');
-	require('./physics');
+	preloadImage(["images/spritesheet-0.json"])
+]).then(() => {
 
-	var texture = new Pixi.Texture.fromImage("images/sprite2.png");
-	var container = new Pixi.DisplayObjectContainer();
-	var sprite = new Pixi.Sprite(texture);
-	sprite.anchor = 0.5;
-	sprite.anchor.y = 0.5;
+	var Body = require('./body');
 
-	stage.addChild(sprite);
+	Body.addNewBody('sprites/bear/bear1.png', {
+		scale: 0.005,
+		mass: 1
+	}).position = [3, 2];
 
-	// var Body = require('./body');
-	// new Body.fromSprite({
-	// 	mass: 0.2,
-	// 	sprite: sprites[0]
-	// });
-	// var b = new Body.fromSprite({
-	// 	mass: 0,
-	// 	width: 5,
-	// 	sprite: sprites[0]
-	// }).body;
-	// b.position = [-1.5, -5];
-	// b.angle = 0.1;
-});
+	var staticBody = Body.addNewBody('sprites/bear/bear1.png', {
+		scale: 0.005,
+		mass: 0
+	});
+
+	staticBody.position[1] = -2;
+}).catch((e) => console.error(e.stack));

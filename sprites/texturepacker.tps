@@ -28,7 +28,7 @@
             </struct>
         </array>
         <key>allowRotation</key>
-        <true/>
+        <false/>
         <key>premultiplyAlpha</key>
         <false/>
         <key>shapeDebug</key>
@@ -38,7 +38,7 @@
         <key>dataFormat</key>
         <string>json</string>
         <key>textureFileName</key>
-        <filename></filename>
+        <filename>../app/images/spritesheet-{n}.webp</filename>
         <key>flipPVR</key>
         <false/>
         <key>pvrCompressionQuality</key>
@@ -74,13 +74,13 @@
         <key>jpgQuality</key>
         <uint>80</uint>
         <key>pngOptimizationLevel</key>
-        <uint>1</uint>
+        <uint>2</uint>
         <key>webpQualityLevel</key>
         <uint>101</uint>
         <key>textureSubPath</key>
         <string></string>
         <key>textureFormat</key>
-        <enum type="SettingsBase::TextureFormat">png</enum>
+        <enum type="SettingsBase::TextureFormat">webp</enum>
         <key>borderPadding</key>
         <uint>2</uint>
         <key>maxTextureSize</key>
@@ -114,7 +114,7 @@
             <key>maxRects</key>
             <struct type="AlgorithmMaxRectsSettings">
                 <key>heuristic</key>
-                <enum type="AlgorithmMaxRectsSettings::Heuristic">Best</enum>
+                <enum type="AlgorithmMaxRectsSettings::Heuristic">AreaFit</enum>
             </struct>
             <key>basic</key>
             <struct type="AlgorithmBasicSettings">
@@ -145,11 +145,11 @@
             <key>data</key>
             <struct type="DataFile">
                 <key>name</key>
-                <filename></filename>
+                <filename>../app/images/spritesheet-{n}.json</filename>
             </struct>
         </map>
         <key>multiPack</key>
-        <false/>
+        <true/>
         <key>forceIdenticalLayout</key>
         <false/>
         <key>outputFormat</key>
@@ -170,7 +170,7 @@
         <key>globalSpriteSettings</key>
         <struct type="SpriteSettings">
             <key>scale</key>
-            <double>1</double>
+            <double>0.83333</double>
             <key>scaleMode</key>
             <enum type="ScaleMode">Smooth</enum>
             <key>innerPadding</key>
@@ -180,7 +180,7 @@
             <key>trimThreshold</key>
             <uint>1</uint>
             <key>trimMode</key>
-            <enum type="SpriteSettings::TrimMode">Trim</enum>
+            <enum type="SpriteSettings::TrimMode">None</enum>
             <key>heuristicMask</key>
             <false/>
             <key>pivotPoint</key>
@@ -188,8 +188,7 @@
         </struct>
         <key>fileList</key>
         <array>
-            <filename>../app/images/sprite2.png</filename>
-            <filename>../app/images/sprite1.png</filename>
+            <filename>./</filename>
         </array>
         <key>ignoreFileList</key>
         <array/>
