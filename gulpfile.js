@@ -19,7 +19,14 @@ gulp.task('styles', function () {
 });
 
 gulp.task('browserify', function () {
-
+  try {
+	  fs.mkdirSync('.tmp');
+	  fs.mkdirSync('.tmp/scripts');
+  } catch (e) {
+  	if (e.code !== 'EEXIST') {
+  		throw e;
+  	}
+  }
   return browserify({ debug: true })
     .add(es6ify.runtime)
     .transform(es6ify)
