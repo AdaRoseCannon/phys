@@ -2,18 +2,17 @@
 
 var Pixi = require('pixi');
 
-function preloadImage(tileAtlas) {
-	return new Promise(function (resolve) {
+function preloadImage(...tileAtlas) {
+	return new Promise(resolve => {
 		var loader = new Pixi.AssetLoader(tileAtlas);
 		loader.onComplete = resolve;
 		loader.load();	
 	});
 }
 
-Promise.all([
-	preloadImage(["images/spritesheet-0.json"])
-]).then(() => {
-
+preloadImage("images/spritesheet-0.json").then(() => {
+	console.log('loaded');
+	require('./render');
 	var Body = require('./body');
 
 	Body.addNewBody('sprites/bear/bear1.png', {
@@ -27,4 +26,4 @@ Promise.all([
 	});
 
 	staticBody.position[1] = -2;
-}).catch((e) => console.error(e.stack));
+}).catch(e => console.error(e.message, e.stack));
