@@ -18,3 +18,28 @@ container.scale.x =  zoom;  // zoom in
 container.scale.y = -zoom; // Note: we flip the y axis to make "up" the physics "up"
 
 module.exports = container;
+
+container.lookAt = function (...coords) {
+
+	if (coords[0].hasOwnProperty('x') && coords[0].hasOwnProperty('y')) {
+		container.position = coords[0];
+		return;
+	}
+
+	if (coords.length === 2) {
+		container.position.x =  -coords[0];
+		container.position.y =  -coords[1];
+		return;
+	}
+
+};
+
+container.setZoom = function (zoom) {
+	container.scale.x =  zoom;  // zoom in
+	container.scale.y = -zoom; // Note: we flip the y axis to make "up" the physics "up"return;
+};
+
+container.zoomBy = function (multiplier) {
+	container.scale.x *=  multiplier;  // zoom in
+	container.scale.y *= multiplier; // Note: we flip the y axis to make "up" the physics "up"return;
+};
