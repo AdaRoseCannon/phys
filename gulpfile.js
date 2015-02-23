@@ -4,6 +4,7 @@
 var gulp = require('gulp');
 var browserify  = require('browserify');
 var es6ify  = require('es6ify');
+var debowerify  = require('debowerify');
 var $ = require('gulp-load-plugins')();
 var fs = require('fs');
 
@@ -30,6 +31,7 @@ gulp.task('browserify', function () {
   return browserify({ debug: true })
     .add(es6ify.runtime)
     .transform(es6ify)
+    .transform(debowerify)
     .require(require.resolve('./app/scripts/main.js'), { entry: true })
     .bundle()
     .pipe(fs.createWriteStream('.tmp/scripts/main.js'));
@@ -48,7 +50,6 @@ gulp.task('html', ['styles'], function () {
 
   return gulp.src('app/*.html')
     .pipe(assets)
-    .pipe($.if('*.js', $.uglify()))
     .pipe($.if('*.css', $.csso()))
     .pipe(assets.restore())
     .pipe($.useref())
@@ -136,7 +137,7 @@ gulp.task('watch', ['connect'], function () {
   gulp.watch('bower.json', ['wiredep']);
 });
 
-gulp.task('build', ['jshint', 'browserify', 'html', 'images', 'fonts', 'extras'], function () {
+gulp.task('build', ['browserify', 'html', 'images', 'fonts', 'extras'], function () {
   return gulp.src('dist/**/*').pipe($.size({title: 'build', gzip: true}));
 });
 

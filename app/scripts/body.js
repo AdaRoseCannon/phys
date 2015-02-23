@@ -1,6 +1,6 @@
 var p2 = require('p2');
 var world = require('./physics');
-var Pixi = require('pixi');
+var Pixi = require('./pixi_wrapper');
 var stage = require('./render');
 
 module.exports.addNewBody = function addNewBody(id, {

@@ -2,6 +2,7 @@
   "name": "phys",
   "private": true,
   "dependencies": {
-    "jquery": "~2.1.1"
+    "jquery": "~2.1.1",
+    "pixi.js": "~2.2.5"
   }
 }

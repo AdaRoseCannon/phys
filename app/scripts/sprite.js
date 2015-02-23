@@ -1,4 +1,4 @@
-var Pixi = require('pixi');
+var Pixi = require('./pixi_wrapper');
 var sprites = {};
 
 class AdaSprite {
