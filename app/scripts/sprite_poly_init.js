@@ -5,8 +5,6 @@ const p2ToPixi = require('./p2_to_pixi');
 
 const stage = require('./render');
 const sprite = Pixi.Sprite.fromFrame('sprites/sprites/bear/bear1.png');
-const doneButton = Pixi.Sprite.fromFrame('sprites/sprites/done.png');
-stage.parent.addChild(doneButton);
 
 let polygon;
 let points = [];
@@ -65,6 +63,13 @@ sprite.scale.y = -1;
 stage.addChild(sprite);
 
 const centerOfMass = drawPoint({x: 0, y: 0});
+
+const doneButton = Pixi.Sprite.fromFrame('sprites/sprites/done.png');
+stage.parent.addChild(doneButton);
+
+window.go = function () {
+	stage.setZoom(0.2, 2000);
+}
 
 stage.parent.interactionManager.onMouseDown = function (e) {
 	addPoint(sprite.toLocal(e));
