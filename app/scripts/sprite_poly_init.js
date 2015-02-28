@@ -57,6 +57,7 @@ function addPoint(position) {
 };
 
 stage.setZoom(0.5);
+stage.interactive = true;
 sprite.anchor.x = 0.5;
 sprite.anchor.y = 0.5;
 sprite.scale.y = -1;
@@ -65,12 +66,13 @@ stage.addChild(sprite);
 const centerOfMass = drawPoint({x: 0, y: 0});
 
 const doneButton = Pixi.Sprite.fromFrame('sprites/sprites/done.png');
-stage.parent.addChild(doneButton);
-
-window.go = function () {
+doneButton.interactive = true;
+doneButton.buttonMode = true;
+doneButton.click = function () {
 	stage.setZoom(0.2, 2000);
 }
+stage.parent.addChild(doneButton);
 
-stage.parent.interactionManager.onMouseDown = function (e) {
-	addPoint(sprite.toLocal(e));
+stage.click = function (e) {
+	addPoint(sprite.toLocal(e.global));
 }.bind(stage);

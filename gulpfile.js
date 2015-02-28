@@ -105,7 +105,7 @@ gulp.task('connect', ['browserify', 'styles'], function () {
 });
 
 gulp.task('serve', ['connect', 'watch'], function () {
-  require('opn')('http://localhost:9000');
+  require('opn')('http://localhost:9000', 'chromium');
 });
 
 // inject bower components
