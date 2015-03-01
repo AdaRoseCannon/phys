@@ -3,16 +3,32 @@ var world = require('./physics');
 var Pixi = require('./pixi_wrapper');
 var stage = require('./render');
 
-module.exports.addNewBody = function addNewBody(id, {
+module.exports.addNewBody = function addNewBody({
+	id = null,
+	sprite = null,
 	mass = 0,
-	scale = 1
+	scale = 1,
+	shape = null,
+	convex = null
 }) {
-	var sprite = Pixi.Sprite.fromFrame(id);
-	sprite.anchor.x = 0.5;
-	sprite.anchor.y = 0.5;
+	if (sprite === null && id !== null) {
+		sprite = Pixi.Sprite.fromFrame(id);
+		sprite.anchor.x = 0.5;
+		sprite.anchor.y = 0.5;
+		stage.addChild(sprite);
+	}
 	sprite.scale.x = scale;
 	sprite.scale.y = -scale;
-	stage.addChild(sprite);
+
+	if (shape === null && convex !== null) {
+
+		shape = new p2.Convex(convex.map(a => a.map(b => b*scale)));
+		shape.updateArea();
+		shape.updateCenterOfMass();
+		if (!shape.centerOfMass[0]) throw Error('Points can\'t define center of mass');
+	} else if (shape === null) {
+		shape = new p2.Rectangle(Math.abs(sprite.width), Math.abs(sprite.height));
+	}
 
 	var body = new p2.Body({
 		mass: mass,
@@ -20,7 +36,7 @@ module.exports.addNewBody = function addNewBody(id, {
 		angularVelocity: 0
 	});
 
-	body.addShape(new p2.Rectangle(Math.abs(sprite.width), Math.abs(sprite.height)));
+	body.addShape(shape);
 
 	require('./loop')(() => {
 		sprite.position.x = body.position[0];

@@ -59,7 +59,7 @@ container.zoomOverTime = function(newZoom, time) {
 	const self = this;
 	window.tween = new TWEEN.Tween({ zoom: this.getZoom() })
 		.to({ zoom: newZoom }, time )
-		.easing( TWEEN.Easing.Elastic.Out )
+		.easing( TWEEN.Easing.Cubic.Out )
 		.onUpdate(function() {
 			self.setZoom(this.zoom, 0);
 		})

@@ -2,9 +2,11 @@ const Pixi = require('./pixi_wrapper');
 const p2 = require('p2');
 const pixiToP2 = require('./pixi_to_p2');
 const p2ToPixi = require('./p2_to_pixi');
+const Body = require('./body');
 
+const id = 'sprites/sprites/bear/bear1.png';
 const stage = require('./render');
-const sprite = Pixi.Sprite.fromFrame('sprites/sprites/bear/bear1.png');
+const sprite = Pixi.Sprite.fromFrame(id);
 
 let polygon;
 let points = [];
@@ -12,22 +14,24 @@ let convex = null;
 
 function updateSpriteAnchorByPosition(sprite, pos) {
 	sprite.anchor.x += pos.x/sprite.width;
-	sprite.anchor.y -= pos.y/sprite.height;
+	sprite.anchor.y += pos.y/sprite.height;
 	for (let point of points) {
 		point.x -= pos.x;
 		point.y -= pos.y;
 	}
 	sprite.position.x += pos.x;
-	sprite.position.y -= pos.y;
+	sprite.position.y += pos.y;
 }
 
 function drawPoints() {
 	if (polygon) polygon.parent.removeChild(polygon);
+	if (!points.length) return;
 	polygon = new Pixi.Graphics();
-	polygon.beginFill(0x00FF00);
-	polygon.moveTo(points[0].x, points[0].y);
+	polygon.beginFill(0xbb0000);
+	polygon.moveTo(points[0].x, -points[0].y);
+	polygon.alpha = 0.6;
 	for (let point of points) {
-		polygon.lineTo(point.x, point.y);
+		polygon.lineTo(point.x, -point.y);
 	}
 	polygon.endFill();
 	sprite.addChild(polygon);
@@ -43,6 +47,7 @@ function drawPoint(position) {
 }
 
 function addPoint(position) {
+	position.y = -position.y;
 	points.push(position);
 	try {
 		convex = new p2.Convex(points.map(pixiToP2.point));
@@ -69,7 +74,21 @@ const doneButton = Pixi.Sprite.fromFrame('sprites/sprites/done.png');
 doneButton.interactive = true;
 doneButton.buttonMode = true;
 doneButton.click = function () {
-	stage.setZoom(0.2, 2000);
+	stage.setZoom(30, 2000);
+
+	Body.addNewBody({
+		sprite: sprite,
+		convex: points.map(pixiToP2.point),
+		scale: 0.01,
+		mass: 1
+	});
+
+	Body.addNewBody({
+		id: 'sprites/sprites/sprite2.png',
+		scale: 0.1,
+		mass: 0
+	}).position = [0, -15];
+
 }
 stage.parent.addChild(doneButton);
 
