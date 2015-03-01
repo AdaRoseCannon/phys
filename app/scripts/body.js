@@ -25,7 +25,7 @@ module.exports.addNewBody = function addNewBody({
 		shape = new p2.Convex(convex.map(a => a.map(b => b*scale)));
 		shape.updateArea();
 		shape.updateCenterOfMass();
-		if (!shape.centerOfMass[0]) throw Error('Points can\'t define center of mass');
+		if (!isFinite(shape.centerOfMass[0])) throw Error('Points can\'t define center of mass');
 	} else if (shape === null) {
 		shape = new p2.Rectangle(Math.abs(sprite.width), Math.abs(sprite.height));
 	}

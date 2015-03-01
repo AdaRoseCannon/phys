@@ -53,7 +53,7 @@ function addPoint(position) {
 		convex = new p2.Convex(points.map(pixiToP2.point));
 		convex.updateArea();
 		convex.updateCenterOfMass();
-		if (!convex.centerOfMass[0]) throw Error('Points can\'t define center of mass');
+		if (!isFinite(convex.centerOfMass[0])) throw Error('Points can\'t define center of mass');
 		updateSpriteAnchorByPosition(sprite, p2ToPixi.point(convex.centerOfMass));
 		drawPoints();
 	} catch (e) {
