@@ -3,14 +3,14 @@ const p2 = require('p2');
 const pixiToP2 = require('./pixi_to_p2');
 const p2ToPixi = require('./p2_to_pixi');
 const Body = require('./body');
+const tris = require('./triangulate');
 
 const id = 'sprites/sprites/bear/bear1.png';
 const stage = require('./render');
 const sprite = Pixi.Sprite.fromFrame(id);
 
-let polygon;
+let polygons = [];
 let points = [];
-let convex = null;
 
 function updateSpriteAnchorByPosition(sprite, pos) {
 	sprite.anchor.x += pos.x/sprite.width;
@@ -23,11 +23,10 @@ function updateSpriteAnchorByPosition(sprite, pos) {
 	sprite.position.y += pos.y;
 }
 
-function drawPoints() {
-	if (polygon) polygon.parent.removeChild(polygon);
+function drawPoints(points) {
 	if (!points.length) return;
-	polygon = new Pixi.Graphics();
-	polygon.beginFill(0xbb0000);
+	let polygon = new Pixi.Graphics();
+	polygon.beginFill(0xffffff*Math.random());
 	polygon.moveTo(points[0].x, -points[0].y);
 	polygon.alpha = 0.6;
 	for (let point of points) {
@@ -35,6 +34,7 @@ function drawPoints() {
 	}
 	polygon.endFill();
 	sprite.addChild(polygon);
+	polygons.push(polygon);
 }
 
 function drawPoint(position) {
@@ -49,15 +49,10 @@ function drawPoint(position) {
 function addPoint(position) {
 	position.y = -position.y;
 	points.push(position);
-	try {
-		convex = new p2.Convex(points.map(pixiToP2.point));
-		convex.updateArea();
-		convex.updateCenterOfMass();
-		if (!isFinite(convex.centerOfMass[0])) throw Error('Points can\'t define center of mass');
-		updateSpriteAnchorByPosition(sprite, p2ToPixi.point(convex.centerOfMass));
-		drawPoints();
-	} catch (e) {
-		console.log(e.message);
+	// updateSpriteAnchorByPosition(sprite, p2ToPixi.point(convex.centerOfMass));
+	polygons.forEach(a => sprite.removeChild(a));
+	if (points.length >= 3) {
+		tris(points.map(pixiToP2.point)).forEach(a => drawPoints(a.map(p2ToPixi.point)));
 	}
 };
 

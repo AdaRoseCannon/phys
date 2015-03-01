@@ -12,4 +12,4 @@ function preloadImage(...tileAtlas) {
 preloadImage("images/spritesheet.json").then(() => {
 	console.log('loaded');
 	require('./sprite_poly_init');
-}).catch(e => console.error(e.message, e.stack));
+}).catch(e => setTimeout(function () { throw e }));
