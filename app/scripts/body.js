@@ -2,7 +2,6 @@ const p2 = require('p2');
 const world = require('./physics');
 const Pixi = require('./pixi_wrapper');
 const stage = require('./render');
-const tris = require('./triangulate');
 
 module.exports.addNewBody = function addNewBody({
 	id = null,
@@ -10,7 +9,7 @@ module.exports.addNewBody = function addNewBody({
 	mass = 0,
 	scale = 1,
 	shape = null,
-	convex = null
+	polygon = null
 }) {
 
 	if (sprite === null && id !== null) {
@@ -22,19 +21,19 @@ module.exports.addNewBody = function addNewBody({
 	sprite.scale.x = scale;
 	sprite.scale.y = -scale;
 
-	var body = new p2.Body({
+	let body = new p2.Body({
 		mass: mass,
 		position: [0,0],
 		angularVelocity: 0
 	});
 
-	if (shape === null && convex !== null) {
-		tris(convex).forEach(t => {
-			let shape = new p2.Convex(t.map(a => a.map(b => b*scale)));
-			shape.updateArea();
-			shape.updateCenterOfMass();
-			body.addShape(shape);
+	if (shape === null && polygon !== null) {
+		let success = body.fromPolygon(polygon.map(a => a.map(b => b*scale)), {
+			optimalDecomp: true
 		});
+		if (!success) {
+			throw Error("Invalid polygon");
+		}
 	} else if (shape === null) {
 		shape = new p2.Rectangle(Math.abs(sprite.width), Math.abs(sprite.height));
 		body.addShape(shape);
@@ -47,8 +46,8 @@ module.exports.addNewBody = function addNewBody({
 		sprite.position.y = body.position[1];
 		sprite.rotation = body.angle;
 	});
-
 	world.addBody(body);
+
 	body.sprite = sprite;
 	return body;
 };

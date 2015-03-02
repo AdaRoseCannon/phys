@@ -20,7 +20,13 @@ container.scale.y = -zoom; // Note: we flip the y axis to make "up" the physics 
 module.exports = container;
 
 TWEEN.update();
-var loop = require('./loop')(() => TWEEN.update());
+require('./loop')(() => TWEEN.update());
+
+renderer.view.addEventListener('mousewheel', function (e) {
+	if (this.mousewheel) {
+		this.mousewheel(e);
+	}
+}.bind(container));
 
 container.lookAt = function (...coords) {
 
