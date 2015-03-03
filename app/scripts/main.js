@@ -1,6 +1,6 @@
 /* jshint devel:true */
 
-var Pixi = require('./pixi_wrapper');
+var Pixi = require('./lib/pixi_wrapper');
 function preloadImage(...tileAtlas) {
 	return new Promise(resolve => {
 		var loader = new Pixi.AssetLoader(tileAtlas);
@@ -11,5 +11,5 @@ function preloadImage(...tileAtlas) {
 
 preloadImage("images/spritesheet.json").then(() => {
 	console.log('loaded');
-	require('./sprite_poly_init');
+	require('./lib/sprite_poly_init');
 }).catch(e => setTimeout(function () { throw e }));
