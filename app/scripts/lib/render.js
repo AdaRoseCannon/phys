@@ -2,10 +2,13 @@ const Pixi = require('./pixi_wrapper');
 const TWEEN = require('tween.js');
 
 var doc = document.body.getBoundingClientRect();
+var target = document.getElementById('render-target');
 
-document.body.innerHTML = '';
 var renderer = Pixi.autoDetectRenderer(doc.width, doc.height);
-document.body.appendChild(renderer.view);
+target.innerHTML = '';
+target.appendChild(renderer.view);
+
+
 renderer.view.classList.add('stage');
 var stage = new Pixi.Stage(0x66FF99);
 require('./loop')(() => renderer.render(stage));

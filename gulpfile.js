@@ -31,12 +31,14 @@ gulp.task('browserify', function () {
 	}
 
 	return Promise.all(fs.readdirSync('./app/scripts/').map(function (a) {
-		return new Promise(function (resolve) {
-			var path = './app/scripts/' + a;
-			if (!fs.statSync(path).isDirectory()) {
+		var path = './app/scripts/' + a;
+		if (!fs.statSync(path).isDirectory()) {
+			return new Promise(function (resolve) {
 				process.stdout.write('Browserify: Processing ' + a + '\n');
                 var writer = fs.createWriteStream('.tmp/scripts/' + a);
-                writer.on('finish', resolve);
+                writer.on('finish', function () {
+                	resolve(a);
+                });
 				browserify({ debug: true })
 					.add(es6ify.runtime)
 					.transform(es6ify)
@@ -44,9 +46,17 @@ gulp.task('browserify', function () {
 					.require(require.resolve(path), { entry: true })
 					.bundle()
 					.pipe(writer);
-			}
-		});
-	}));
+			}).then(function (a) {
+				process.stdout.write('Browserify: Finished processing ' + a + '\n');
+			});
+		} else {
+			return undefined;
+		}
+	})).then(function (a) {
+		process.stdout.write('Browserify: Finished all\n');
+	}, function (e) {
+		process.stdout.write(e);
+	});
 });
 
 gulp.task('jshint', function () {
@@ -116,7 +126,7 @@ gulp.task('connect', ['browserify', 'styles'], function () {
 });
 
 gulp.task('serve', ['connect', 'watch'], function () {
-	require('opn')('http://localhost:9000');
+	require('opn')('http://localhost:9000/creator.html');
 });
 
 // inject bower components
