@@ -4,12 +4,17 @@ const pixiToP2 = require('./pixi_to_p2');
 const p2ToPixi = require('./p2_to_pixi');
 const Body = require('./body');
 
+const PhysSprite = require('./ada_sprite');
+
 const id = 'sprites/sprites/bear/bear1.png';
 const stage = require('./render');
 const sprite = Pixi.Sprite.fromFrame(id);
 
+const propertyTarget = document.querySelector('#properties-target');
+
 let tempAssets = [];
 let points = [];
+let currentWorking = new PhysSprite();
 
 function drawPoint(position) {
 	const pointSprite = Pixi.Sprite.fromFrame('sprites/sprites/handle.png');
@@ -54,32 +59,17 @@ function addPoint(position) {
 	points.push(position);
 	if (points.length >= 3) {
 
-		let body = new p2.Body({
-			mass: 1
-		});
+		currentWorking.setPoints(points.map(pixiToP2.point), true);
+		tempAssets.forEach(a => sprite.removeChild(a));
+		updateSpriteAnchorByPosition(sprite, p2ToPixi.point(currentWorking.getCenterOfMass()));
+		drawPoints(points);
 
-		if (body.fromPolygon(points.map(pixiToP2.point))){
-
-			// Calculate center of mass.
-			let totalArea = 0;
-			let com = [0, 0];
-
-			body.shapes.forEach((s, i) => {
-				totalArea += s.area;
-				com[0] += (s.centerOfMass[0] + body.shapeOffsets[i][0]) * s.area;
-				com[1] += (s.centerOfMass[1] + body.shapeOffsets[i][1]) * s.area;
-			});
-			com[0] /= totalArea;
-			com[1] /= totalArea;
-			com[0] += body.position[0];
-			com[1] += body.position[1];
-
-			tempAssets.forEach(a => sprite.removeChild(a));
-			updateSpriteAnchorByPosition(sprite, p2ToPixi.point(com));
-			drawPoints(points);
-		} else {
-			console.log('Error constructing shape');
+		let ih = "";
+		for (let property in currentWorking.data) {
+			ih += `<li data-property="${property}">${property}: ${JSON.stringify(currentWorking.data[property])}</li>`;
 		}
+		propertyTarget.innerHTML = ih;
+
 	}
 }
 

@@ -6,10 +6,26 @@ html, body {
 	padding: 0;
 	height: 100%;
 	overflow: hidden;
+	font-family: sans-serif;
 }
 
 .stage {
 	width: 100%;
 	height: 100%;
 	background: black;
+}
+
+body.creator {
+	.workspace {
+		display: flex;
+
+		.workspace-contents {
+			flex: 0 1 200px;
+		}
+
+		#render-target {
+			flex: 1 0 0;
+		}
+
+	}
 }

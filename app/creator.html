@@ -18,8 +18,23 @@
 
   </head>
   <body class="creator">
-    <h1>Loading Creator...</h1>
-    <div id="render-target"></div>
+    <h1>Editor</h1>
+    <div class="tools"></div>
+    <div class="workspace">
+        <div class="workspace-contents">
+            <h3>Objects</h3>
+            <ul>
+                <li>Object 1</li>
+            </ul>
+            <h3>Properties</h3>
+            <ul id="properties-target">
+                <li>Name</li>
+            </ul>
+        </div>
+        <div id="render-target">
+            <h1>Loading...</h1>
+        </div>
+    </div>
     <!-- build:js scripts/main.js -->
     <script src="bower_components/pixi.js/bin/pixi.js"></script>
     <script src="scripts/creator.js"></script>
