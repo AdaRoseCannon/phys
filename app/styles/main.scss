@@ -19,11 +19,22 @@ body.creator {
 	.workspace {
 		display: flex;
 
-		.workspace-contents {
-			flex: 0 1 200px;
+		button {
+			position: absolute;
+			margin: 1em;
 		}
 
-		#render-target {
+		.workspace-contents {
+			flex: 0 1 200px;
+			padding: 1em;
+			overflow: scroll;
+
+			.editable {
+				cursor: pointer;
+			}
+		}
+
+		.workspace {
 			flex: 1 0 0;
 		}
 

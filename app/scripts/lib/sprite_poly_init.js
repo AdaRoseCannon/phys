@@ -39,6 +39,7 @@ function updateSpriteAnchorByPosition(sprite, pos) {
 }
 
 function drawPoints(points) {
+	console.log(points);
 	if (!points.length) {
 		return;
 	}
@@ -59,14 +60,17 @@ function addPoint(position) {
 	points.push(position);
 	if (points.length >= 3) {
 
-		currentWorking.setPoints(points.map(pixiToP2.point), true);
+		currentWorking.setPoints(points.map(pixiToP2.point));
 		tempAssets.forEach(a => sprite.removeChild(a));
 		updateSpriteAnchorByPosition(sprite, p2ToPixi.point(currentWorking.getCenterOfMass()));
-		drawPoints(points);
+
+		currentWorking.data.shapes.forEach(shape => {
+			drawPoints(shape.map(i => currentWorking.data.points[i]).map(p2ToPixi.point));
+		});
 
 		let ih = "";
 		for (let property in currentWorking.data) {
-			ih += `<li data-property="${property}">${property}: ${JSON.stringify(currentWorking.data[property])}</li>`;
+			ih += `<tr><td data-property="${property}">${property}</td><td class="editable">${JSON.stringify(currentWorking.data[property])}</td></tr>`;
 		}
 		propertyTarget.innerHTML = ih;
 
@@ -99,7 +103,7 @@ doneButton.click = function () {
 		mass: 0
 	}).position = [0, -15];
 };
-stage.parent.addChild(doneButton);
+
 stage.hitArea = new Pixi.Rectangle(-10000, -10000, 20000, 20000);
 stage.click = function (e) {
 	addPoint(sprite.toLocal(e.global));
