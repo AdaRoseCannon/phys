@@ -24,8 +24,8 @@ class PhysSprite {
 			mass: 1
 		});
 
-		if (body.fromPolygon(points, optimizePoints)){
-			this.data.points = points;
+		if (body.fromPolygon(points.slice(), optimizePoints)){
+			this.data.points = points.slice();
 
 			// Calculate center of mass.
 			let totalArea = 0;

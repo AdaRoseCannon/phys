@@ -3,5 +3,5 @@
  */
 
 module.exports.point = function (point) {
-	return [point.x, point.y];
+	return [point.x, -point.y];
 }

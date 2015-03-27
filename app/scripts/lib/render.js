@@ -1,10 +1,9 @@
 const Pixi = require('./pixi_wrapper');
 const TWEEN = require('tween.js');
 
-var doc = document.body.getBoundingClientRect();
 var target = document.getElementById('render-target');
 
-var renderer = Pixi.autoDetectRenderer(doc.width, doc.height);
+var renderer = Pixi.autoDetectRenderer(target.offsetWidth, target.offsetHeight);
 target.innerHTML = '';
 target.appendChild(renderer.view);
 
