@@ -13,3 +13,5 @@ preloadImage("images/spritesheet.json").then(() => {
 	console.log('loaded');
 	require('./lib/sprite_poly_init');
 }).catch(e => setTimeout(function () { throw e }));
+
+$.material.init();

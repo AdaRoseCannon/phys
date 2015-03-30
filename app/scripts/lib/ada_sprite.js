@@ -1,4 +1,5 @@
 const p2 = require('p2');
+const Pixi = require('./pixi_wrapper');
 const extend = require('util')._extend;
 
 function vecDiff(p1, p2) {
@@ -7,14 +8,20 @@ function vecDiff(p1, p2) {
 
 class PhysSprite {
 	constructor(options) {
+		if (options.sprite === undefined) {
+			throw Error("Need to define with a sprite path.");
+		}
 		this.data = extend({
 			name: 'NULL',
 			mass: 1,
-			scale: 1
+			scale: 1,
 		}, options);
+
+		this.sprite = Pixi.Sprite.fromFrame(this.data.sprite);
+		this.sprite.scale.y = -1;
 	}
 
-	setSprite(name) {
+	addSprite(name) {
 		this.data.sprite = name;
 	}
 
@@ -64,12 +71,12 @@ class PhysSprite {
 		this.data.com = point;
 	}
 
-	getCenterOfMass(point) {
+	getCenterOfMass() {
 		return this.data.com;
 	}
 
 	optimizePoints() {
-		setPoints(this.points, true);
+		this.setPoints(this.points, true);
 	}
 }
 
