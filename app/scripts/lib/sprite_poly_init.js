@@ -5,8 +5,11 @@ const p2ToPixi = require('./p2_to_pixi');
 const Body = require('./body');
 const stage = require('./render');
 const PhysSprite = require('./ada_sprite');
+
 const propertyTarget = $('#properties-target')[0];
 const contextButton = $('#context-button')[0];
+const contextLink = $('#context-link')[0];
+const testLink = $('#test-link')[0];
 
 const STATE_FRESH = 0;
 const STATE_WORKING = 1;
@@ -47,12 +50,15 @@ function setContextIcon(icon) {
 function updateContextIcon() {
 	switch(getState()) {
 		case STATE_FRESH:
+			contextLink.innerHTML = "New Object";
 			setContextIcon('add-box');
 			break;
 		case STATE_WORKING:
+			contextLink.innerHTML = "Add new Path";
 			setContextIcon('add');
 			break;
 		case STATE_ADDPATH:
+			contextLink.innerHTML = "Finished Path";
 			setContextIcon('done');
 			break;
 	}
@@ -129,39 +135,68 @@ function addPoint(position) {
 	}
 }
 
-/**
- * Events
- */
+function getSprite() {
+	return new Promise((resolve, reject) => {
+		const m = $('.modal');
+		const s = m.find('#select');
+		let html = '';
+		for(let i in Pixi.TextureCache) {
+			html += `<option>${i}</option>`;
+		}
+		s.html(html);
+		m.modal();
+		const b = $('.modal-backdrop');
+		m.on('hide.bs.modal', reject);
+		m.find('#modal-okay').on('click', e => {
+			m.hide(e);
+			b.hide(200, b.remove);
+			resolve(s.val());
+		});
+	});
+}
 
-contextButton.addEventListener('click', function () {
+function onContextClick() {
 
 	switch(getState()) {
 		case STATE_FRESH:
-			currentWorking = new PhysSprite({
-				sprite: 'sprites/sprites/bear/bear1.png'
+			getSprite().then(sprite => {
+				currentWorking = new PhysSprite({sprite});
+				pushState(STATE_WORKING);
+				currentWorking.sprite.anchor.x = 0.5;
+				currentWorking.sprite.anchor.y = 0.5;
+				stage.addChild(currentWorking.sprite);
 			});
-			pushState(STATE_WORKING);
-			currentWorking.sprite.anchor.x = 0.5;
-			currentWorking.sprite.anchor.y = 0.5;
-			stage.addChild(currentWorking.sprite);
 			break;
 		case STATE_WORKING:
 			pushState(STATE_ADDPATH);
 			break;
 		case STATE_ADDPATH:
-			stage.setZoom(30, 2000);
-			Body.addNewBody({
-				id: 'sprites/sprites/sprite2.png',
-				scale: 0.1,
-				mass: 0
-			}).position = [0, -15];
 			popState();
 			break;
 	}
-});
+}
+
+function test() {
+	stage.setZoom(30, 2000);
+	currentWorking.setScale(stage.worldScale);
+	Body.addNewBody({
+		id: 'sprites/sprites/sprite2.png',
+		scale: 0.1,
+		mass: 0
+	}).position = [0, -15];
+	currentWorking.startPhysics();
+}
+
+/**
+ * Events
+ */
+
+contextButton.addEventListener('click', onContextClick);
+contextLink.addEventListener('click', onContextClick);
+testLink.addEventListener('click', test);
 
 stage.click = function (e) {
-	if (getState() === STATE_WORKING) {
+	if (getState() === STATE_ADDPATH) {
 		addPoint(currentWorking.sprite.toLocal(e.global));
 	}
 }.bind(stage);

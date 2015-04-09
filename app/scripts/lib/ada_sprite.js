@@ -1,6 +1,7 @@
 const p2 = require('p2');
 const Pixi = require('./pixi_wrapper');
 const extend = require('util')._extend;
+const world = require('./physics');
 
 function vecDiff(p1, p2) {
 	return Math.sqrt(Math.pow(p1[0]-p2[0], 2) + Math.pow(p1[1]-p2[1], 2));
@@ -18,7 +19,13 @@ class PhysSprite {
 		}, options);
 
 		this.sprite = Pixi.Sprite.fromFrame(this.data.sprite);
-		this.sprite.scale.y = -1;
+		this.setScale(this.data.scale);
+	}
+
+	setScale(scale) {
+		this.data.scale = scale;
+		this.sprite.scale.y = -this.data.scale;
+		this.sprite.scale.x = this.data.scale;
 	}
 
 	addSprite(name) {
@@ -65,6 +72,29 @@ class PhysSprite {
 		} else {
 			throw Error('Error constructing shape');
 		}
+	}
+
+	startPhysics() {
+
+		this.body = new p2.Body({
+			mass: this.data.mass,
+			position: this.position || [0,0],
+			angularVelocity: this.angularVelocity || 0
+		});
+
+		this.data.shapes.forEach(shapeIn => {
+			let shape = new p2.Convex(shapeIn.map(a => a.map(b => b*this.scale)));
+			shape.updateArea();
+			shape.updateCenterOfMass();
+			this.body.addShape(shape);
+		});
+
+		require('./loop')(() => {
+			this.sprite.position.x = this.body.position[0];
+			this.sprite.position.y = this.body.position[1];
+			this.sprite.rotation = this.body.angle;
+		});
+		world.addBody(this.body);
 	}
 
 	setCenterOfMass(point) {

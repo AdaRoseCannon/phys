@@ -1,79 +1,95 @@
 <!doctype html>
 <html lang="">
-  <head>
-	<meta charset="utf-8">
-	<meta name="description" content="">
-	<meta name="viewport" content="width=device-width, initial-scale=1, minimal-ui">
-	<title>Falling (Editor)</title>
-	<!-- Place favicon.ico and apple-touch-icon.png in the root directory -->
+	<head>
+		<meta charset="utf-8">
+		<meta name="description" content="">
+		<meta name="viewport" content="width=device-width, initial-scale=1, minimal-ui">
+		<title>Falling (Editor)</title>
+		<!-- Place favicon.ico and apple-touch-icon.png in the root directory -->
 
-	<!-- build:css styles/vendor.css -->
-	<!-- bower:css -->
-	<link href="../bower_components/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
-	<link href="../bower_components/bootstrap-material-design/dist/css/material.min.css" rel="stylesheet">
-	<link href="../bower_components/bootstrap-material-design/dist/css/ripples.min.css" rel="stylesheet">
-	<link href="../bower_components/bootstrap-material-design/dist/css/roboto.min.css" rel="stylesheet">
-	<link href="../bower_components/bootstrap-material-design/dist/css/material-fullpalette.min.css" rel="stylesheet">
-	<!-- endbower -->
-	<!-- endbuild -->
+		<!-- build:css styles/vendor.css -->
+		<!-- bower:css -->
+		<link href="../bower_components/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
+		<link href="../bower_components/bootstrap-material-design/dist/css/material.min.css" rel="stylesheet">
+		<link href="../bower_components/bootstrap-material-design/dist/css/ripples.min.css" rel="stylesheet">
+		<link href="../bower_components/bootstrap-material-design/dist/css/roboto.min.css" rel="stylesheet">
+		<link href="../bower_components/bootstrap-material-design/dist/css/material-fullpalette.min.css" rel="stylesheet">
+		<!-- endbower -->
+		<!-- endbuild -->
 
-	<!-- build:css styles/main.css -->
-	<link rel="stylesheet" href="styles/main.css">
-	<!-- endbuild -->
+		<!-- build:css styles/main.css -->
+		<link rel="stylesheet" href="styles/main.css">
+		<!-- endbuild -->
 
-  </head>
-  <body class="creator">
-	<div class="header">
-		<div class="header-panel shadow-z-2">
-		<div class="navbar navbar-default">
-			<div class="navbar-header">
-				<button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-responsive-collapse">
-				<span class="icon-bar"></span>
-				<span class="icon-bar"></span>
-				<span class="icon-bar"></span>
-				</button>
-				<a class="navbar-brand" href="javascript:void(0)">Editor<div class="ripple-wrapper"></div></a>
-			</div>
-			<div class="navbar-collapse collapse navbar-responsive-collapse">
-				<ul class="nav navbar-nav">
-					<li class="active"><a href="javascript:void(0)">Active<div class="ripple-wrapper"></div></a></li>
-					<li><a href="javascript:void(0)">Link</a></li>
-					<li class="dropdown">
-						<a href="http://fezvrasta.github.io/bootstrap-material-design/bootstrap-elements.html" data-target="#" class="dropdown-toggle" data-toggle="dropdown">Dropdown <b class="caret"></b></a>
-						<ul class="dropdown-menu">
-							<li><a href="javascript:void(0)">Action</a></li>
-							<li><a href="javascript:void(0)">Another action</a></li>
-							<li><a href="javascript:void(0)">Something else here</a></li>
-							<li class="divider"></li>
-							<li class="dropdown-header">Dropdown header</li>
-							<li><a href="javascript:void(0)">Separated link</a></li>
-							<li><a href="javascript:void(0)">One more separated link</a></li>
-						</ul>
-					</li>
-				</ul>
-				<form class="navbar-form navbar-left">
-					<input class="form-control col-lg-8" placeholder="Search" type="text">
-				</form>
-				<ul class="nav navbar-nav navbar-right">
-					<li><a href="javascript:void(0)">Link</a></li>
-					<li class="dropdown">
-						<a href="http://fezvrasta.github.io/bootstrap-material-design/bootstrap-elements.html" data-target="#" class="dropdown-toggle" data-toggle="dropdown">Dropdown <b class="caret"></b></a>
-						<ul class="dropdown-menu">
-							<li><a href="javascript:void(0)">Action</a></li>
-							<li><a href="javascript:void(0)">Another action</a></li>
-							<li><a href="javascript:void(0)">Something else here</a></li>
-							<li class="divider"></li>
-							<li><a href="javascript:void(0)">Separated link</a></li>
-						</ul>
-					</li>
-				</ul>
+	</head>
+	<body class="creator">
+		<div class="modal fade">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+						<h4 class="modal-title">Modal title</h4>
+					</div>
+					<div class="modal-body">
+						<div class="form-group">
+							<label for="select" class="col-lg-2 control-label">Select Sprite(s)</label>
+							<div class="col-lg-10">
+								<br>
+								<select multiple="" class="form-control" id="select">
+								</select>
+							</div>
+						</div>
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+						<button type="button" class="btn btn-primary" id="modal-okay">Select</button>
+					</div>
+				</div>
 			</div>
 		</div>
-	</div>
-	</div>
-	<div class="workspace container-fluid">
-		<row>
-			<div class="workspace-contents col-sm-6 col-lg-4">
+		<div class="header">
+			<div class="header-panel shadow-z-2">
+				<div class="navbar navbar-default">
+					<div class="navbar-header">
+						<button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-responsive-collapse">
+							<span class="icon-bar"></span>
+							<span class="icon-bar"></span>
+							<span class="icon-bar"></span>
+						</button>
+						<span class="navbar-brand">Editor</span>
+					</div>
+					<div class="navbar-collapse collapse navbar-responsive-collapse">
+						<ul class="nav navbar-nav">
+							<li><a id="context-link" href="javascript:void(0)">New object</a></li>
+							<li class="dropdown">
+								<a href="javascript:void(0)" class="dropdown-toggle" data-toggle="dropdown">Tools <b class="caret"></b></a>
+								<ul class="dropdown-menu">
+									<li class="menu-global dropdown-header">Global tools</li>
+									<li class="menu-global"><a href="javascript:void(0)">Set world scale</a></li>
+									<li class="menu-object dropdown-header">Object tools</li>
+									<li class="menu-object"><a href="javascript:void(0)">Cancel</a></li>
+									<li class="menu-object"><a href="javascript:void(0)">Finished</a></li>
+									<li class="menu-shape dropdown-header">Shape tools</li>
+									<li class="menu-shape"><a href="javascript:void(0)">Add new shape</a></li>
+									<li class="menu-sprite dropdown-header">Sprite tools</li>
+									<li class="menu-sprite"><a href="javascript:void(0)">Add new sprite</a></li>
+									<!--<li class="divider"></li>-->
+								</ul>
+							</li>
+						</ul>
+						<!--<form class="navbar-form navbar-left">
+							<input class="form-control col-lg-8" placeholder="Search" type="text">
+						</form>-->
+						<ul class="nav navbar-nav navbar-right">
+							<li><a id="test-link" href="javascript:void(0)">Test</a></li>
+						</ul>
+					</div>
+				</div>
+			</div>
+		</div>
+		</div>
+		<div class="workspace container-fluid">
+			<div class="workspace-contents hidden col-sm-12 col-lg-4">
 				<h3>Objects</h3>
 				<table class="table" id="objects-target">
 				</table>
@@ -81,7 +97,7 @@
 				<table class="table" id="properties-target">
 				</table>
 			</div>
-			<div class="workspace-editor col-sm-6 col-lg-8">
+			<div class="workspace-editor col-sm-12 col-lg-8">
 				<button id="context-button" class="btn btn-fab btn-raised btn-material-cyan">
 					<i class="mdi-content-add"></i>
 					<div class="ripple-wrapper"></div>
@@ -90,15 +106,14 @@
 					<h1>Loading...</h1>
 				</div>
 			</div>
-		</row>
-	</div>
-	<!-- build:js scripts/main.js -->
-	<script src="../bower_components/pixi.js/bin/pixi.js"></script>
-	<script src="../bower_components/jquery/dist/jquery.min.js"></script>
-	<script src="../bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
-	<script src="../bower_components/bootstrap-material-design/scripts/ripples.js"></script>
-	<script src="../bower_components/bootstrap-material-design/scripts/material.js"></script>
-	<script src="scripts/creator.js"></script>
-	<!-- endbuild -->
-</body>
+		</div>
+		<!-- build:js scripts/main.js -->
+		<script src="../bower_components/pixi.js/bin/pixi.js"></script>
+		<script src="../bower_components/jquery/dist/jquery.min.js"></script>
+		<script src="../bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
+		<script src="../bower_components/bootstrap-material-design/scripts/ripples.js"></script>
+		<script src="../bower_components/bootstrap-material-design/scripts/material.js"></script>
+		<script src="scripts/creator.js"></script>
+		<!-- endbuild -->
+	</body>
 </html>
