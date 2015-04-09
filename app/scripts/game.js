@@ -5,7 +5,7 @@ function preloadImage(...tileAtlas) {
 	return new Promise(resolve => {
 		var loader = new Pixi.AssetLoader(tileAtlas);
 		loader.onComplete = resolve;
-		loader.load();	
+		loader.load();
 	});
 }
 

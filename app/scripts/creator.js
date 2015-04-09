@@ -3,9 +3,10 @@
 var Pixi = require('./lib/pixi_wrapper');
 function preloadImage(...tileAtlas) {
 	return new Promise(resolve => {
-		var loader = new Pixi.AssetLoader(tileAtlas);
-		loader.onComplete = resolve;
-		loader.load();	
+		var loader = new Pixi.loaders.Loader();
+		tileAtlas.forEach(s => loader.add(s));
+		loader.on('complete', resolve);
+		loader.load();
 	});
 }
 
