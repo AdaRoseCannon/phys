@@ -82,12 +82,15 @@ class PhysSprite {
 			angularVelocity: this.angularVelocity || 0
 		});
 
-		this.data.shapes.forEach(shapeIn => {
-			let shape = new p2.Convex(shapeIn.map(a => a.map(b => b*this.scale)));
+		this.data.shapes.forEach(function (shapeIn) {
+			let self = this;
+			let points = shapeIn.map(function(i) { return self.data.points[i]; });
+			points = points.map(a => a.map(b => b*self.data.scale));
+			let shape = new p2.Convex(points);
 			shape.updateArea();
 			shape.updateCenterOfMass();
 			this.body.addShape(shape);
-		});
+		}.bind(this));
 
 		require('./loop')(() => {
 			this.sprite.position.x = this.body.position[0];

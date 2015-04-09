@@ -9,9 +9,13 @@ target.appendChild(renderer.view);
 
 
 renderer.view.classList.add('stage');
-var stage = new Pixi.Stage(0x66FF99);
+
+// Screenspace
+var stage = new Pixi.Container();
 require('./loop')(() => renderer.render(stage));
-var container = new Pixi.DisplayObjectContainer();
+
+// Object space
+var container = new Pixi.Container();
 stage.addChild(container);
 var zoom = 100;
 container.position.x =  renderer.width/2; // center at origin
@@ -46,7 +50,7 @@ container.lookAt = function (...coords) {
 }.bind(container);
 
 container.getZoom = function () {
-	return this.scale.x; 
+	return this.scale.x;
 }.bind(container);
 
 container.setZoom = function (zoom, t) {

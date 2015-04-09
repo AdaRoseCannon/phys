@@ -140,7 +140,7 @@ function getSprite() {
 		const m = $('.modal');
 		const s = m.find('#select');
 		let html = '';
-		for(let i in Pixi.TextureCache) {
+		for(let i in Pixi.utils.TextureCache) {
 			html += `<option>${i}</option>`;
 		}
 		s.html(html);
@@ -197,7 +197,7 @@ testLink.addEventListener('click', test);
 
 stage.click = function (e) {
 	if (getState() === STATE_ADDPATH) {
-		addPoint(currentWorking.sprite.toLocal(e.global));
+		addPoint(currentWorking.sprite.toLocal(e.data.global));
 	}
 }.bind(stage);
 
