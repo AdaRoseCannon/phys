@@ -84,8 +84,7 @@ class PhysSprite {
 
 		this.data.shapes.forEach(function (shapeIn) {
 			let self = this;
-			let points = shapeIn.map(function(i) { return self.data.points[i]; });
-			points = points.map(a => a.map(b => b*self.data.scale));
+			let points = shapeIn.map(i => self.data.points[i]).map(a => a.map(b => b*self.data.scale));
 			let shape = new p2.Convex(points);
 			shape.updateArea();
 			shape.updateCenterOfMass();

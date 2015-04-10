@@ -22,7 +22,7 @@ container.position.x =  renderer.width/2; // center at origin
 container.position.y =  renderer.height/2;
 container.scale.x =  zoom;  // zoom in
 container.scale.y = -zoom; // Note: we flip the y axis to make "up" the physics "up"
-
+container.worldScale = 0.01;
 module.exports = container;
 
 TWEEN.update();
