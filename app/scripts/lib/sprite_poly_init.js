@@ -24,6 +24,8 @@ stage.setZoom(0.5);
 stage.interactive = true;
 stage.hitArea = new Pixi.Rectangle(-10000, -10000, 20000, 20000);
 
+window.ps = [];
+
 function getState() {
 	return state[state.length - 1];
 }
@@ -112,19 +114,22 @@ function drawPoints(points) {
 
 function addPoint(position) {
 
-	points.push(position);
-	if (points.length >= 3) {
+	if (window.ps.indexOf(JSON.stringify(position)) !== -1) {
+		debugger;
+	}
+	window.ps.push(JSON.stringify(position));
 
+	points.push(position);
+	console.log(position, JSON.stringify(points));
+	if (points.length >= 3) {
 		currentWorking.setPoints(points.map(pixiToP2.point), true);
 
 		tempAssets.forEach(a => currentWorking.sprite.removeChild(a));
 
 		currentWorking.data.shapes.forEach(shape => {
-			drawPoints(shape.map(i => currentWorking.data.points[i]).map(p2ToPixi.point));
+			drawPoints(shape.map(i => i.constructor === Array ? i : currentWorking.data.points[i]).map(p2ToPixi.point));
 		});
-		drawPoint(p2ToPixi.point(currentWorking.getCenterOfMass()));
-
-		currentWorking.sprite.pivot = p2ToPixi.point(currentWorking.getCenterOfMass());
+		drawPoint({x:0, y:0});
 
 		let ih = "";
 		for (let property in currentWorking.data) {
@@ -184,6 +189,7 @@ function test() {
 		scale: 0.1,
 		mass: 0
 	}).position = [0, -15];
+	stage.lookAt([0, -7]);
 	currentWorking.startPhysics();
 }
 
@@ -197,6 +203,7 @@ testLink.addEventListener('click', test);
 
 stage.click = function (e) {
 	if (getState() === STATE_ADDPATH) {
+		console.log(JSON.stringify(e.data.global));
 		addPoint(currentWorking.sprite.toLocal(e.data.global));
 	}
 }.bind(stage);

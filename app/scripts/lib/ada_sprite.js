@@ -2,6 +2,7 @@ const p2 = require('p2');
 const Pixi = require('./pixi_wrapper');
 const extend = require('util')._extend;
 const world = require('./physics');
+const p2ToPixi = require('./p2_to_pixi');
 
 function vecDiff(p1, p2) {
 	return Math.sqrt(Math.pow(p1[0]-p2[0], 2) + Math.pow(p1[1]-p2[1], 2));
@@ -16,6 +17,7 @@ class PhysSprite {
 			name: 'NULL',
 			mass: 1,
 			scale: 1,
+			com: [0, 0]
 		}, options);
 
 		this.sprite = Pixi.Sprite.fromFrame(this.data.sprite);
@@ -52,11 +54,13 @@ class PhysSprite {
 				com[0] += (s.centerOfMass[0] + body.shapeOffsets[i][0]) * s.area;
 				com[1] += (s.centerOfMass[1] + body.shapeOffsets[i][1]) * s.area;
 				this.data.shapes[i] = s.vertices
-					.map(vs => [vs[0] + body.shapeOffsets[i][0] + body.position[0], vs[1] + body.shapeOffsets[i][1] + body.position[1]])
+					.map(vs => {
+						return [vs[0] + body.shapeOffsets[i][0] + body.position[0], vs[1] + body.shapeOffsets[i][1] + body.position[1]];
+					})
 					.map(v1s => {
 						for (let i=0, l=this.data.points.length; i<l; i++) {
 							let v2s = this.data.points[i];
-							if (vecDiff(v1s, v2s) <= 0.0001) {
+							if (vecDiff(v1s, v2s) <= 0.001) {
 								return i;
 							}
 						}
@@ -99,8 +103,15 @@ class PhysSprite {
 		world.addBody(this.body);
 	}
 
-	setCenterOfMass(point) {
-		this.data.com = point;
+	setCenterOfMass(pos) {
+		this.sprite.anchor.x += pos[0]/this.sprite.width;
+		this.sprite.anchor.y += pos[1]/this.sprite.height;
+		for (let point of this.data.points) {
+			point[0] -= pos[0];
+			point[1] -= pos[1];
+		}
+		this.sprite.position.x += pos[0];
+		this.sprite.position.y += pos[1];
 	}
 
 	getCenterOfMass() {
