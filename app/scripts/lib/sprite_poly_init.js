@@ -16,9 +16,10 @@ const STATE_WORKING = 1;
 const STATE_ADDPATH = 2;
 
 let tempAssets = [];
-let points = [];
 let currentWorking;
 let state = [STATE_FRESH];
+let shapeEditorIndex = -1;
+let currentUsedVertices = [];
 
 stage.setZoom(0.5);
 stage.interactive = true;
@@ -119,23 +120,34 @@ function addPoint(position) {
 	}
 	window.ps.push(JSON.stringify(position));
 
-	points.push(position);
-	console.log(position, JSON.stringify(points));
-	if (points.length >= 3) {
-		currentWorking.setPoints(points.map(pixiToP2.point), true);
+	// let points = [];
+	// (currentWorking.data.shapes[shapeEditorIndex] || []).forEach(shape => {
+	// 	shape.forEach(vertex => {
+	// 		points.push(currentWorking.data.points[vertex]);
+	// 	});
+	// });
+	// points.push(position);
 
+	currentUsedVertices.push(currentWorking.addVertex(pixiToP2.point(position)));
+
+	if (currentUsedVertices.length >= 3) {
+		currentWorking.setShape(currentUsedVertices, shapeEditorIndex, true);
 		tempAssets.forEach(a => currentWorking.sprite.removeChild(a));
-
-		currentWorking.data.shapes.forEach(shape => {
-			drawPoints(shape.map(i => i.constructor === Array ? i : currentWorking.data.points[i]).map(p2ToPixi.point));
-		});
+		currentWorking.data.shapes.forEach(shapeGroup => shapeGroup.forEach(shape => {
+			drawPoints(shape.map(i => {
+				return i.constructor === Array ? i : currentWorking.data.points[i];
+			}).map(p2ToPixi.point));
+		}));
 		drawPoint({x:0, y:0});
 
-		let ih = "";
-		for (let property in currentWorking.data) {
-			ih += `<tr><td data-property="${property}">${property}</td><td class="editable">${JSON.stringify(currentWorking.data[property])}</td></tr>`;
-		}
-		propertyTarget.innerHTML = ih;
+		// Update properties table
+		(() => {
+			let ih = "";
+			for (let property in currentWorking.data) {
+				ih += `<tr><td data-property="${property}">${property}</td><td class="editable">${JSON.stringify(currentWorking.data[property])}</td></tr>`;
+			}
+			propertyTarget.innerHTML = ih;
+		})();
 
 	}
 }
@@ -160,6 +172,11 @@ function getSprite() {
 	});
 }
 
+function startNewPath() {
+	shapeEditorIndex = currentWorking.data.shapes.length;
+	currentUsedVertices = [];
+}
+
 function onContextClick() {
 
 	switch(getState()) {
@@ -173,6 +190,7 @@ function onContextClick() {
 			});
 			break;
 		case STATE_WORKING:
+			startNewPath();
 			pushState(STATE_ADDPATH);
 			break;
 		case STATE_ADDPATH:
@@ -203,7 +221,6 @@ testLink.addEventListener('click', test);
 
 stage.click = function (e) {
 	if (getState() === STATE_ADDPATH) {
-		console.log(JSON.stringify(e.data.global));
 		addPoint(currentWorking.sprite.toLocal(e.data.global));
 	}
 }.bind(stage);
