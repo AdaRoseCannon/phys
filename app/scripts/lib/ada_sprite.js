@@ -67,11 +67,18 @@ class PhysSprite {
 
 		// breakdown shape and add it
 		if (body.fromPolygon(this.getVertices(shape), optimizePoints)){
+
 			this.data.shapes[index] = [];
 
-			// Calculate center of mass.
-			let totalArea = 0;
-			let com = [0, 0];
+			body.shapes.forEach((s, i) => {
+				this.data.shapes[index][i] = s.vertices
+					// Get the absolutely positioned vertex from eachshape and match them to points
+					.map(vs => {
+						return [vs[0] + body.shapeOffsets[i][0] + body.position[0], vs[1] + body.shapeOffsets[i][1] + body.position[1]];
+					})
+					// get the matching point.
+					.map(v1s => getVecIndexFromArray(v1s, this.data.points));
+			});
 
 			// Add previously broken down shapes
 			this.data.shapes.forEach(shapeGroup => shapeGroup.forEach(s => {
@@ -81,18 +88,15 @@ class PhysSprite {
 				body.addShape(c);
 			}));
 
+			// Calculate center of mass.
+			let totalArea = 0;
+			let com = [0, 0];
 			body.shapes.forEach((s, i) => {
 				totalArea += s.area;
 				com[0] += (s.centerOfMass[0] + body.shapeOffsets[i][0]) * s.area;
 				com[1] += (s.centerOfMass[1] + body.shapeOffsets[i][1]) * s.area;
-				this.data.shapes[index][i] = s.vertices
-					// Get the absolutely positioned vertex from eachshape and match them to points
-					.map(vs => {
-						return [vs[0] + body.shapeOffsets[i][0] + body.position[0], vs[1] + body.shapeOffsets[i][1] + body.position[1]];
-					})
-					// get the matching point.
-					.map(v1s => getVecIndexFromArray(v1s, this.data.points));
 			});
+
 			com[0] /= totalArea;
 			com[1] /= totalArea;
 			com[0] += body.position[0];
